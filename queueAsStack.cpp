@@ -44,7 +44,7 @@ template<typename T>
 class LLStack {
 private:
     Node<T> *top;
-    Node<T> *tail;
+//    Node<T> *tail;
     int stackSize;
     const int SMAXITEMS = 20; //TODO determine if Prof Manju had a number for this in mind
 
@@ -55,7 +55,7 @@ public:
     LLStack(T *value) {
         Node<T> *newNode = new Node<T>(value);
         top = newNode;
-        tail = newNode;
+//        tail = newNode;
         stackSize = 1;
     }
 
@@ -93,6 +93,8 @@ public:
     }
 
     void push(T *item) { // TODO write stack push method
+        Node<T> *newNode
+
 
     }
 
@@ -114,14 +116,14 @@ public:
         return top;
     }
 
-    Node<T> *getTail() {
-        if (tail == nullptr) {
-            cout << "Tail: nullptr" << endl;
-        } else {
-            cout << "Tail: " << tail->value << endl;
-        }
-        return tail;
-    }
+//    Node<T> *getTail() {
+//        if (tail == nullptr) {
+//            cout << "Tail: nullptr" << endl;
+//        } else {
+//            cout << "Tail: " << tail->value << endl;
+//        }
+//        return tail;
+//    }
 
     int getLength() {
         cout << "Length: " << stackSize << endl;
@@ -149,25 +151,26 @@ public:
 
 //All insert methods
 //Insert at end
-    void append(T *value) {
-        Node<T> *newNode = new Node<T>(value);
-        if (stackSize == 0) {
-            top = newNode;
-            tail = newNode;
-        } else {
-            tail->nextNode = newNode;
-            tail = newNode;
-        }
-        stackSize++;
-    }
+//    void append(T *value) {
+//        Node<T> *newNode = new Node<T>(value);
+//        if (stackSize == 0) {
+//            top = newNode;
+//            tail = newNode;
+//        } else {
+//            tail->nextNode = newNode;
+//            tail = newNode;
+//        }
+//        stackSize++;
+//    }
 
 //Insert at beginning
 
+    // used for stack push
     void prepend(T *value) {
         Node<T> *newNode = new Node<T>(value);
         if (stackSize == 0) {
             top = newNode;
-            tail = newNode;
+//            tail = newNode;
         } else {
             newNode->nextNode = top;
             top = newNode;
@@ -199,35 +202,36 @@ public:
 //All delete Methods
 //Delete Tail
 
-    void deleteLast() {
-        if (stackSize == 0)
-            return;
-        Node<T> *temp = top;
-        if (stackSize == 1) {
-            top = nullptr;
-            tail = nullptr;
-        } else {
-            Node<T> *pre = top;
-            while (temp->nextNode) {
-                pre = temp;
-                temp = temp->nextNode;
-            }
-            tail = pre;
-            tail->nextNode = nullptr;
-        }
-        delete temp;
-        stackSize--;
-    }
+//    void deleteLast() {
+//        if (stackSize == 0)
+//            return;
+//        Node<T> *temp = top;
+//        if (stackSize == 1) {
+//            top = nullptr;
+//            tail = nullptr;
+//        } else {
+//            Node<T> *pre = top;
+//            while (temp->nextNode) {
+//                pre = temp;
+//                temp = temp->nextNode;
+//            }
+//            tail = pre;
+//            tail->nextNode = nullptr;
+//        }
+//        delete temp;
+//        stackSize--;
+//    }
 
 //Delete Head
 
+    // used for stack pop
     void deleteFirst() {
         if (stackSize == 0)
             return;
         Node<T> *temp = top;
         if (stackSize == 1) {
             top = nullptr;
-            tail = nullptr;
+//            tail = nullptr;
         } else {
             top = top->nextNode;
         }
@@ -237,21 +241,21 @@ public:
 
 //Delete at Index
 
-    void deleteNode(int index) {
-        if (index < 0 || index >= stackSize)
-            return;
-        if (index == 0)
-            return deleteFirst();
-        if (index == stackSize - 1)
-            return deleteLast();
-
-        Node<T> *prev = get(index - 1);
-        Node<T> *temp = prev->nextNode;
-
-        prev->nextNode = temp->nextNode;
-        delete temp;
-        stackSize--;
-    }
+//    void deleteNode(int index) {
+//        if (index < 0 || index >= stackSize)
+//            return;
+//        if (index == 0)
+//            return deleteFirst();
+//        if (index == stackSize - 1)
+//            return deleteLast();
+//
+//        Node<T> *prev = get(index - 1);
+//        Node<T> *temp = prev->nextNode;
+//
+//        prev->nextNode = temp->nextNode;
+//        delete temp;
+//        stackSize--;
+//    }
 };
 
 template<typename T>
