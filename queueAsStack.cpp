@@ -92,18 +92,27 @@ public:
             return false;
     }
 
-    void push(T *item) { // TODO write stack push method
-        Node<T> *newNode
+    void push(T *item) {
+        if (isFull()) {
+            cout << "Stack is full, cannot push onto a full stack. (Overflow condition)" << endl;
+        }
+        prepend(item);
+    }
 
+    void pop() {
+        if (isEmpty()) {
+            cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
+        }
+        else
+            deleteFirst();
 
     }
 
-    void pop() { // TODO write stack pop method
-
-    }
-
-    T *peek() { // TODO write stack peek method
-
+    T *peek() {
+        if (isEmpty()) {
+            cout << "Stack is empty, nothing to peek." << endl;
+        }
+        return top->data;  //TODO check method return and function
     }
 
 //get and set
@@ -166,7 +175,7 @@ public:
 //Insert at beginning
 
     // used for stack push
-    void prepend(T *value) {
+    void prepend(T *value) { //TODO add overflow condition (if stackSize == SMAXITEMS)
         Node<T> *newNode = new Node<T>(value);
         if (stackSize == 0) {
             top = newNode;
@@ -227,6 +236,7 @@ public:
     // used for stack pop
     void deleteFirst() {
         if (stackSize == 0)
+//            cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
             return;
         Node<T> *temp = top;
         if (stackSize == 1) {
