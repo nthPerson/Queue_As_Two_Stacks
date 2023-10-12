@@ -103,6 +103,7 @@ public:
             return;
         }
         prepend(item);
+        ++stackSize;
     }
 
     void pop() {
@@ -113,6 +114,7 @@ public:
             cout << "Popped from the stack: ";
             top->print();
             deleteFirst();
+            --stackSize;
         }
     }
 
@@ -290,35 +292,75 @@ private:
     const int QMAXITEMS = 20; //TODO determine if Prof Manju had a number for this in mind
 
 public:
-    bool isFull() {
-        if (queueSize == QMAXITEMS)
-            return true;
+    // constructor
+    StackQ() {
+        enQStack = new LLStack<T>();
+        deQStack = new LLStack<T>();
+        queueSize = 0;
+    }
+
+    // destructor
+    ~StackQ() {
+        delete enQStack;
+        delete deQStack;
+    }
+
+
+    void enqueue(T *item) { // TODO test enqueue method
+        if (isFull()) {
+            cout << "Queue is full, cannot enqueue. (Overflow condition)" << endl;
+            return;
+        } else {
+            enQStack->push(item);
+            ++queueSize;
+        }
+    }
+
+    void dequeue() { // TODO test dequeue method
+        if (deQStack->isEmpty()) {
+            while (!enQStack->isEmpty()) {
+                deQStack->push(enQStack->pop());
+            }
+            deQStack->pop();
+            --queueSize;
+            return;
+        } else {
+            deQStack->pop();
+            --queueSize;
+        }
+    }
+
+    T* peek() { // TODO test peek method
+        if (deQStack->isEmpty()) {
+            while (!enQStack->isEmpty()) {
+                deQStack->push(enQStack->pop());
+            }
+            return deQStack->peek();
+
+        } else {
+            return deQStack->peek();
+        }
+    }
+
+    bool isFull() { // TODO test isFull method
+        if (enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS)
+            return true; // can simplify method with return enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS;
         else
             return false;
     }
 
     bool isEmpty() {
-        if (queueSize == 0)
-            return true;
+        if (enQStack->getStackSize() + deQStack->getStackSize() == 0)
+            return true; // can simplify method with return enQStack->getStackSize() + deQStack->getStackSize() == 0;
         else
             return false;
-    }
-
-    void enqueue(T *item) { // TODO write enqueue method
-
-    }
-
-    void dequeue() { // TODO write dequeue method
-
-    }
-
-    T* peek() { // TODO write peek method
-
     }
 
     void print() { // TODO write print method
 
     }
+
+
 
 };
 
