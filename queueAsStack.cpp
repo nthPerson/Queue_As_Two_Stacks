@@ -15,9 +15,10 @@ public:
     }
 
     void print() { // TODO change print output
+        cout << personName << ", " << reserveCode << endl;
 
-        cout << personName << " " << endl;
-        cout << reserveCode << " " << endl;
+//        cout << personName << " " << endl;
+//        cout << reserveCode << " " << endl;
     }
 };
 
@@ -30,7 +31,7 @@ public:
     Node<T> *nextNode;
 
     Node(T *value) {
-        this->value = value;
+        this->data = value;
         nextNode = nullptr;
     }
 
@@ -46,11 +47,15 @@ private:
     Node<T> *top;
 //    Node<T> *tail;
     int stackSize;
-    const int SMAXITEMS = 20; //TODO determine if Prof Manju had a number for this in mind
-
-
+    const int SMAXITEMS = 10; //TODO determine if Prof Manju had a number for this in mind
 
 public:
+    // no-arg constructor
+    LLStack() {
+        top = nullptr;
+        stackSize = 0;
+    }
+
 // Constructor
     LLStack(T *value) {
         Node<T> *newNode = new Node<T>(value);
@@ -95,6 +100,7 @@ public:
     void push(T *item) {
         if (isFull()) {
             cout << "Stack is full, cannot push onto a full stack. (Overflow condition)" << endl;
+            return;
         }
         prepend(item);
     }
@@ -103,20 +109,27 @@ public:
         if (isEmpty()) {
             cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
         }
-        else
+        else {
+            cout << "Popped from the stack: ";
+            top->print();
             deleteFirst();
-
+        }
     }
 
     T *peek() {
         if (isEmpty()) {
             cout << "Stack is empty, nothing to peek." << endl;
+            return nullptr;
         }
-        return top->data;  //TODO check method return and function
+        return top->data;  // returns pointer to top's data member.  Print member with llStack->peek()->print()
     }
 
+//    int getStackSize(LLStack<T> *llStack) {
+//        return llStack->stackSize;
+//    }
+
 //get and set
-    Node<T> *getHead() {
+    Node<T> *getTop() {
         if (top == nullptr) {
             cout << "Head: nullptr" << endl;
         } else {
@@ -134,7 +147,7 @@ public:
 //        return tail;
 //    }
 
-    int getLength() {
+    int getStackSize() {
         cout << "Length: " << stackSize << endl;
         return stackSize;
     }
@@ -175,7 +188,7 @@ public:
 //Insert at beginning
 
     // used for stack push
-    void prepend(T *value) { //TODO add overflow condition (if stackSize == SMAXITEMS)
+    void prepend(T *value) {
         Node<T> *newNode = new Node<T>(value);
         if (stackSize == 0) {
             top = newNode;
@@ -312,6 +325,51 @@ public:
 //Main Program
 
 int main() {
+    auto *t1 = new TicketItem("Joe", "1");
+    auto *node1 = new Node<TicketItem>(t1);
+//    auto *testStack = new LLStack<Node<TicketItem>>(node1);
+    auto *testStack = new LLStack<Node<TicketItem>>();
+
+    // testing pop from empty stack
+    cout << "testing pop from empty stack" << endl;
+    testStack->pop();
+
+    // testing peek from empty stack
+    cout << "testing peek from empty stack" << endl;
+    testStack->peek();
+
+    // testing push
+    testStack->push(node1);
+    testStack->printList();
+    cout << endl;
+    testStack->push(node1);
+    testStack->push(node1);
+    testStack->printList();
+    cout << endl;
+
+    // testing pop
+    testStack->pop();
+    testStack->printList();
+    cout << endl;
+
+    // testing peek
+    cout << "testing peek" << endl;
+    testStack->peek()->print();
+
+    // testing push onto full stack
+    cout << "testing push onto full stack" << endl;
+    for (int i = 0; i < 20; ++i) {
+        cout << "i = " << i << endl;
+        testStack->push(node1);
+    }
+    testStack->push(node1);
+    testStack->printList();
+
+
+
+
+
+
 //creating TicketItem object
 //    data * d1 = new TicketItem(10, "a");
 
