@@ -85,6 +85,7 @@ public:
             temp->print();
             temp = temp->nextNode;
         }
+//        delete temp;
     }
 
     // stack methods
@@ -299,17 +300,6 @@ public:
         }
     }
 
-    // first enqueue method that doesn't handle size of queue and stacks properly
-//    void enqueue(T *item) {
-//        if (isFull()) {
-//            cout << "Queue is full, cannot enqueue. (Overflow condition)" << endl;
-//            return;
-//        } else {
-//            enQStack->push(item);
-//            ++queueSize;
-//        }
-//    }
-
     void dequeue() {
         if (deQStack->isEmpty()) {
             while (!enQStack->isEmpty()) {
@@ -327,6 +317,7 @@ public:
         }
     }
 
+
     T* peek() { // TODO test peek method
         if (deQStack->isEmpty()) {
             while (!enQStack->isEmpty()) {
@@ -341,7 +332,7 @@ public:
         }
     }
 
-    bool isFull() { // TODO test isFull method
+    bool isFull() {
         if (enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS)
             return true; // can simplify method with return enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS;
         else
@@ -355,62 +346,30 @@ public:
             return false;
     }
 
-    void printQ() { // TODO test edge cases of print method
+
+    // time complexity O(n)
+    void printQ() {
         auto *printStack = new LLStack<T>;
 
-        // print deQStack because it has the oldest items first
-        if (!deQStack->isEmpty()) {
-            deQStack->printList();
-            // move deQStack to printStack to make room for enQStack's items
-            while (!deQStack->isEmpty()) {
-                printStack->push(deQStack->peek());
-                deQStack->pop();
-            }
-            // move enQStack's items to deQStack to get FIFO order for printing
-            if (!enQStack->isEmpty()) {
-                while (!enQStack->isEmpty()) {
-                    deQStack->push(enQStack->peek());
-                    enQStack->pop();
-                }
-                // print items that came from enQStack
-                deQStack->printList();
-                // move items from deQStack to printStack
-                while (!deQStack->isEmpty()) {
-                    printStack->push(deQStack->peek());
-                    deQStack->pop();
-                }
-            }
-            // move all items back to deQStack, maintaining FIFO, for later use in program
-            while (!printStack->isEmpty()) {
-                deQStack->push(printStack->peek());
-                printStack->pop();
-            }
-        } else {
-            // move enQStack's items to deQStack to get FIFO order for printing
-            if (!enQStack->isEmpty()) {
-                while (!enQStack->isEmpty()) {
-                    deQStack->push(enQStack->peek());
-                    enQStack->pop();
-                }
-                // print items that came from enQStack
-                deQStack->printList();
-                // might not need the rest of this in the case that deQStack is empty and enQStack is not empty
-                // move items from deQStack to printStack
-                while (!deQStack->isEmpty()) {
-                    printStack->push(deQStack->peek());
-                    deQStack->pop();
-                }
-                // move all items back to deQStack, maintaining FIFO, for later use in program
-                while (!printStack->isEmpty()) {
-                    deQStack->push(printStack->peek());
-                    printStack->pop();
-                }
+        // print deQStack
+        deQStack->printList();
 
-            }
+        // move enQStack's items to printStack for printing
+        while (!enQStack->isEmpty()) {
+            printStack->push(enQStack->peek());
+            enQStack->pop();
         }
+        // print printStack
+        printStack->printList();
+
+        // return items back to enQStack
+        while (!printStack->isEmpty()) {
+            enQStack->push(printStack->peek());
+            printStack->pop();
+        }
+
+        delete printStack;
     }
-
-
 
 };
 
@@ -436,18 +395,18 @@ int main() {
 //    cout << "\nTesting creation of StackQ instance, memory location of StackQ testQ: " << testQ << endl;
 
     // testing enqueue method
-//    testQ->enqueue(node1);
-//    testQ->enqueue(node2);
-//    testQ->enqueue(node3);
-//    testQ->dequeue();
-//    testQ->enqueue(node4);
-//    testQ->enqueue(node5);
+    testQ->enqueue(node1);
+    testQ->enqueue(node2);
+    testQ->enqueue(node3);
+    testQ->dequeue();
+    testQ->enqueue(node4);
+    testQ->enqueue(node5);
 
     // testing isFull() method
 //    for (int i = 0; i < 20; ++i) {
 //        testQ->enqueue(node1);
 //    }
-//    testQ->printQ();
+    testQ->printQ();
 
 
 //    // testing pop from empty stack
