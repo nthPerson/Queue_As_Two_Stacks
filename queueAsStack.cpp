@@ -1,4 +1,6 @@
+
 #include <iostream>
+
 
 using namespace std;
 
@@ -73,6 +75,10 @@ public:
         }
     }
 
+    int getSMAXITEMS() {
+        return SMAXITEMS;
+    }
+    
     void printList() {
         Node<T> *temp = top;
         while (temp != nullptr) {
@@ -239,11 +245,70 @@ public:
         if (isFull()) {
             cout << "Queue is full, cannot enqueue. (Overflow condition)" << endl;
             return;
+
+        // if the enQStack is full
+        } else if (enQStack->isFull()) {
+            // if there are items in deQStack, move them to tempDQStack to preserve FIFO
+            if (!deQStack->isEmpty()) {
+                auto *tempDQStack = new LLStack<T>();
+                while (!deQStack->isEmpty()) {
+                    tempDQStack->push(deQStack->peek());
+                    deQStack->pop();
+                }
+                // move enQStack's items to tempEnqueueStack so oldest members will be moved to deQStack
+                auto *tempEnqueueStack = new LLStack<T>();
+                while (!enQStack->isEmpty()) {
+                    tempEnqueueStack->push(enQStack->peek());
+                    enQStack->pop();
+                }
+                // move tempEnqueueStack's items to deQStack until deQStack is full
+                for (int i = 0; i < deQStack->getSMAXITEMS() - tempDQStack->getStackSize(); ++i) {
+                    deQStack->push(tempEnqueueStack->peek());
+                    tempEnqueueStack->pop();
+                }
+                // move tempEnqueueStack's items back to enQStack
+                while (!tempEnqueueStack->isEmpty()) {
+                    enQStack->push(tempEnqueueStack->peek());
+                    tempEnqueueStack->pop();
+                }
+                // move tempDQStack's items back to enQStack, preserving FIFO
+                while (!tempDQStack->isEmpty()) {
+                    deQStack->push(tempDQStack->peek());
+                    tempDQStack->pop();
+                }
+                // now enqueue item
+                enQStack->push(item);
+                ++queueSize;
+                delete tempEnqueueStack;
+                delete tempDQStack;
+
+            // if the deQStack is empty, move enQStack's items to deQStack to make room for new enqueue
+            } else {
+                while (!enQStack->isEmpty()) {
+                    deQStack->push(enQStack->peek());
+                    enQStack->pop();
+                }
+                enQStack->push(item);
+                ++queueSize;
+            }
+
+        // if the enQStack is not full, enqueue
         } else {
             enQStack->push(item);
             ++queueSize;
         }
     }
+
+    // first enqueue method that doesn't handle size of queue and stacks properly
+//    void enqueue(T *item) {
+//        if (isFull()) {
+//            cout << "Queue is full, cannot enqueue. (Overflow condition)" << endl;
+//            return;
+//        } else {
+//            enQStack->push(item);
+//            ++queueSize;
+//        }
+//    }
 
     void dequeue() {
         if (deQStack->isEmpty()) {
@@ -345,6 +410,8 @@ public:
         }
     }
 
+
+
 };
 
 int main() {
@@ -364,6 +431,8 @@ int main() {
 
     // StackQ components
     auto *testQ = new StackQ<Node<TicketItem>>();
+
+//    testEnqueueUntilFull();
 //    cout << "\nTesting creation of StackQ instance, memory location of StackQ testQ: " << testQ << endl;
 
     // testing enqueue method
@@ -375,10 +444,10 @@ int main() {
 //    testQ->enqueue(node5);
 
     // testing isFull() method
-    for (int i = 0; i < 20; ++i) {
-        testQ->enqueue(node1);
-    }
-    testQ->printQ();
+//    for (int i = 0; i < 20; ++i) {
+//        testQ->enqueue(node1);
+//    }
+//    testQ->printQ();
 
 
 //    // testing pop from empty stack
