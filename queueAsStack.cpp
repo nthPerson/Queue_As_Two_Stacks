@@ -14,7 +14,7 @@ public:
         this->personName = personName;
     }
 
-    void print() { // TODO change print output
+    void print() {
         cout << personName << ", " << reserveCode << endl;
 
 //        cout << personName << " " << endl;
@@ -60,7 +60,6 @@ public:
     LLStack(T *value) {
         Node<T> *newNode = new Node<T>(value);
         top = newNode;
-//        tail = newNode;
         stackSize = 1;
     }
 
@@ -126,31 +125,19 @@ public:
         return top->data;  // returns pointer to top's data member.  Print member with llStack->peek()->print()
     }
 
-//    int getStackSize(LLStack<T> *llStack) {
-//        return llStack->stackSize;
-//    }
-
-//get and set
+    // get and set
     Node<T> *getTop() {
         if (top == nullptr) {
             cout << "Head: nullptr" << endl;
         } else {
-            cout << "Head: " << top->value << endl;
+            // commented out for use in printQ()
+//            cout << "Head: " << top->value << endl;
         }
         return top;
     }
 
-//    Node<T> *getTail() {
-//        if (tail == nullptr) {
-//            cout << "Tail: nullptr" << endl;
-//        } else {
-//            cout << "Tail: " << tail->value << endl;
-//        }
-//        return tail;
-//    }
-
     int getStackSize() {
-        cout << "Length: " << stackSize << endl;
+//        cout << "Length: " << stackSize << endl;
         return stackSize;
     }
 
@@ -173,22 +160,6 @@ public:
         return false;
     }
 
-//All insert methods
-//Insert at end
-//    void append(T *value) {
-//        Node<T> *newNode = new Node<T>(value);
-//        if (stackSize == 0) {
-//            top = newNode;
-//            tail = newNode;
-//        } else {
-//            tail->nextNode = newNode;
-//            tail = newNode;
-//        }
-//        stackSize++;
-//    }
-
-//Insert at beginning
-
     // used for stack push
     void prepend(T *value) {
         Node<T> *newNode = new Node<T>(value);
@@ -199,10 +170,9 @@ public:
             newNode->nextNode = top;
             top = newNode;
         }
-        stackSize++;
+        // removed stackSize increment because it is being incremented in push()
+//        stackSize++;
     }
-
-//Insert at Index
 
     bool insert(int index, T *value) {
         if (index < 0 || index > stackSize)
@@ -223,31 +193,6 @@ public:
         return true;
     }
 
-//All delete Methods
-//Delete Tail
-
-//    void deleteLast() {
-//        if (stackSize == 0)
-//            return;
-//        Node<T> *temp = top;
-//        if (stackSize == 1) {
-//            top = nullptr;
-//            tail = nullptr;
-//        } else {
-//            Node<T> *pre = top;
-//            while (temp->nextNode) {
-//                pre = temp;
-//                temp = temp->nextNode;
-//            }
-//            tail = pre;
-//            tail->nextNode = nullptr;
-//        }
-//        delete temp;
-//        stackSize--;
-//    }
-
-//Delete Head
-
     // used for stack pop
     void deleteFirst() {
         if (stackSize == 0)
@@ -261,26 +206,10 @@ public:
             top = top->nextNode;
         }
         delete temp;
-        stackSize--;
+        // removed decrement to stackSize because it's being done in pop()
+//        stackSize--;
     }
 
-//Delete at Index
-
-//    void deleteNode(int index) {
-//        if (index < 0 || index >= stackSize)
-//            return;
-//        if (index == 0)
-//            return deleteFirst();
-//        if (index == stackSize - 1)
-//            return deleteLast();
-//
-//        Node<T> *prev = get(index - 1);
-//        Node<T> *temp = prev->nextNode;
-//
-//        prev->nextNode = temp->nextNode;
-//        delete temp;
-//        stackSize--;
-//    }
 };
 
 template<typename T>
@@ -306,7 +235,7 @@ public:
     }
 
 
-    void enqueue(T *item) { // TODO test enqueue method
+    void enqueue(T *item) {
         if (isFull()) {
             cout << "Queue is full, cannot enqueue. (Overflow condition)" << endl;
             return;
@@ -316,11 +245,14 @@ public:
         }
     }
 
-    void dequeue() { // TODO test dequeue method
+    void dequeue() {
         if (deQStack->isEmpty()) {
             while (!enQStack->isEmpty()) {
-                deQStack->push(enQStack->pop());
+//                deQStack->push(enQStack->pop());
+                deQStack->push(enQStack->peek());
+                enQStack->pop();
             }
+            // after enQStack has been moved to deQStack, pop FIFO
             deQStack->pop();
             --queueSize;
             return;
@@ -333,7 +265,9 @@ public:
     T* peek() { // TODO test peek method
         if (deQStack->isEmpty()) {
             while (!enQStack->isEmpty()) {
-                deQStack->push(enQStack->pop());
+//                deQStack->push(enQStack->pop());
+                deQStack->push(enQStack->peek());
+                enQStack->pop();
             }
             return deQStack->peek();
 
@@ -356,70 +290,131 @@ public:
             return false;
     }
 
-    void print() { // TODO write print method
+    void printQ() { // TODO test edge cases of print method
+        auto *printStack = new LLStack<T>;
 
+        // print deQStack because it has the oldest items first
+        if (!deQStack->isEmpty()) {
+            deQStack->printList();
+            // move deQStack to printStack to make room for enQStack's items
+            while (!deQStack->isEmpty()) {
+                printStack->push(deQStack->peek());
+                deQStack->pop();
+            }
+            // move enQStack's items to deQStack to get FIFO order for printing
+            if (!enQStack->isEmpty()) {
+                while (!enQStack->isEmpty()) {
+                    deQStack->push(enQStack->peek());
+                    enQStack->pop();
+                }
+                // print items that came from enQStack
+                deQStack->printList();
+                // move items from deQStack to printStack
+                while (!deQStack->isEmpty()) {
+                    printStack->push(deQStack->peek());
+                    deQStack->pop();
+                }
+            }
+            // move all items back to deQStack, maintaining FIFO, for later use in program
+            while (!printStack->isEmpty()) {
+                deQStack->push(printStack->peek());
+                printStack->pop();
+            }
+        } else {
+            // move enQStack's items to deQStack to get FIFO order for printing
+            if (!enQStack->isEmpty()) {
+                while (!enQStack->isEmpty()) {
+                    deQStack->push(enQStack->peek());
+                    enQStack->pop();
+                }
+                // print items that came from enQStack
+                deQStack->printList();
+                // might not need the rest of this in the case that deQStack is empty and enQStack is not empty
+                // move items from deQStack to printStack
+                while (!deQStack->isEmpty()) {
+                    printStack->push(deQStack->peek());
+                    deQStack->pop();
+                }
+                // move all items back to deQStack, maintaining FIFO, for later use in program
+                while (!printStack->isEmpty()) {
+                    deQStack->push(printStack->peek());
+                    printStack->pop();
+                }
+
+            }
+        }
     }
-
-
 
 };
 
-//Main Program
-
 int main() {
+    // LLStack components
     auto *t1 = new TicketItem("Joe", "1");
+    auto *t2 = new TicketItem("Amy", "2");
+    auto *t3 = new TicketItem("Dave", "3");
+    auto *t4 = new TicketItem("Larry", "4");
+    auto *t5 = new TicketItem("Robert", "5");
     auto *node1 = new Node<TicketItem>(t1);
+    auto *node2 = new Node<TicketItem>(t2);
+    auto *node3 = new Node<TicketItem>(t3);
+    auto *node4 = new Node<TicketItem>(t4);
+    auto *node5 = new Node<TicketItem>(t5);
 //    auto *testStack = new LLStack<Node<TicketItem>>(node1);
     auto *testStack = new LLStack<Node<TicketItem>>();
 
-    // testing pop from empty stack
-    cout << "testing pop from empty stack" << endl;
-    testStack->pop();
+    // StackQ components
+    auto *testQ = new StackQ<Node<TicketItem>>();
+//    cout << "\nTesting creation of StackQ instance, memory location of StackQ testQ: " << testQ << endl;
 
-    // testing peek from empty stack
-    cout << "testing peek from empty stack" << endl;
-    testStack->peek();
+    // testing enqueue method
+//    testQ->enqueue(node1);
+//    testQ->enqueue(node2);
+//    testQ->enqueue(node3);
+//    testQ->dequeue();
+//    testQ->enqueue(node4);
+//    testQ->enqueue(node5);
 
-    // testing push
-    testStack->push(node1);
-    testStack->printList();
-    cout << endl;
-    testStack->push(node1);
-    testStack->push(node1);
-    testStack->printList();
-    cout << endl;
-
-    // testing pop
-    testStack->pop();
-    testStack->printList();
-    cout << endl;
-
-    // testing peek
-    cout << "testing peek" << endl;
-    testStack->peek()->print();
-
-    // testing push onto full stack
-    cout << "testing push onto full stack" << endl;
+    // testing isFull() method
     for (int i = 0; i < 20; ++i) {
-        cout << "i = " << i << endl;
-        testStack->push(node1);
+        testQ->enqueue(node1);
     }
-    testStack->push(node1);
-    testStack->printList();
+    testQ->printQ();
 
 
-
-
-
-
-//creating TicketItem object
-//    data * d1 = new TicketItem(10, "a");
-
-//Creating Linked List
-//    LLStack<TicketItem> *ll1 = new LLStack<TicketItem>(d1);
-
-//Calling operations on Linked List
-//    ll1->printList();
+//    // testing pop from empty stack
+//    cout << "testing pop from empty stack" << endl;
+//    testStack->pop();
+//
+//    // testing peek from empty stack
+//    cout << "testing peek from empty stack" << endl;
+//    testStack->peek();
+//
+//    // testing push
+//    testStack->push(node1);
+//    testStack->printList();
+//    cout << endl;
+//    testStack->push(node1);
+//    testStack->push(node1);
+//    testStack->printList();
+//    cout << endl;
+//
+//    // testing pop
+//    testStack->pop();
+//    testStack->printList();
+//    cout << endl;
+//
+//    // testing peek
+//    cout << "testing peek" << endl;
+//    testStack->peek()->print();
+//
+//    // testing push onto full stack
+//    cout << "testing push onto full stack" << endl;
+//    for (int i = 0; i < 20; ++i) {
+//        cout << "i = " << i << endl;
+//        testStack->push(node1);
+//    }
+//    testStack->push(node1);
+//    testStack->printList();
 
     return 0;
 }
