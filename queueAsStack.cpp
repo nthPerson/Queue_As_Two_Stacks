@@ -267,6 +267,7 @@ public:
                     deQStack->push(tempEnqueueStack->peek());
                     tempEnqueueStack->pop();
                 }
+                // here are some changes
                 // move tempEnqueueStack's items back to enQStack
                 while (!tempEnqueueStack->isEmpty()) {
                     enQStack->push(tempEnqueueStack->peek());
