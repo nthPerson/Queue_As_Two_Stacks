@@ -112,12 +112,14 @@ public:
         ++stackSize;
     }
 
+    // TODO pop cannot output 'popped from the stack:..." for the printQ method to work properly
     void pop() {
         if (isEmpty()) {
             cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
         }
         else {
-            cout << "Popped from the stack: ";
+            // removed print statement to avoid over-printing nodes in the printQ method
+//            cout << "Popped from the stack: ";
             top->print();
             deleteFirst();
             --stackSize;
@@ -148,6 +150,7 @@ public:
         return stackSize;
     }
 
+    // TODO remove get
     Node<T> *get(int index) {
         if (index < 0 || index >= stackSize)
             return nullptr;
@@ -158,6 +161,7 @@ public:
         return temp;
     }
 
+    // TODO remove set
     bool set(int index, T *value) {
         Node<T> *temp = get(index);
         if (temp) {
@@ -181,6 +185,7 @@ public:
 //        stackSize++;
     }
 
+    // TODO remove insert
     bool insert(int index, T *value) {
         if (index < 0 || index > stackSize)
             return false;
@@ -348,22 +353,32 @@ public:
     }
 
 
+    // TODO figure out how to avoid printing every time a pop() happens so duplicates aren't output
     // time complexity O(n)
     void printQ() {
         auto *printStack = new LLStack<T>;
 
-        // print deQStack
-        deQStack->printList();
+        // print deQStack by moving it to printStack
+        while (!deQStack->isEmpty()) {
+            printStack->push(deQStack->peek());
+            deQStack->pop();
+        }
+        // return items to deQStack
+        while (!printStack->isEmpty()) {
+            deQStack->push(printStack->peek());
+            printStack->pop();
+        }
 
         // move enQStack's items to printStack for printing
+        // TODO do not print items on move to printStack
         while (!enQStack->isEmpty()) {
             printStack->push(enQStack->peek());
             enQStack->pop();
         }
-        // print printStack
-        printStack->printList();
+        // print printStack by moving it back to enQStack
+//        printStack->printList();
 
-        // return items back to enQStack
+        // return items back to enQStack, print on the way
         while (!printStack->isEmpty()) {
             enQStack->push(printStack->peek());
             printStack->pop();
@@ -371,6 +386,28 @@ public:
 
         delete printStack;
     }
+//    void printQ() {
+//        auto *printStack = new LLStack<T>;
+//
+//        // print deQStack
+//        deQStack->printList();
+//
+//        // move enQStack's items to printStack for printing
+//        while (!enQStack->isEmpty()) {
+//            printStack->push(enQStack->peek());
+//            enQStack->pop();
+//        }
+//        // print printStack
+//        printStack->printList();
+//
+//        // return items back to enQStack
+//        while (!printStack->isEmpty()) {
+//            enQStack->push(printStack->peek());
+//            printStack->pop();
+//        }
+//
+//        delete printStack;
+//    }
 
 };
 
