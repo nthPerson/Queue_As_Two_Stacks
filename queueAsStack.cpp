@@ -118,7 +118,7 @@ public:
         ++stackSize;
     }
 
-    // TODO pop cannot output 'popped from the stack:..." for the printQ method to work properly
+
     void pop() {
         if (isEmpty()) {
             cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
