@@ -1,13 +1,9 @@
-
 #include <iostream>
-
-
 using namespace std;
 
-// TicketItem Class : this class will contain the details of the items in the queue
+// TicketItem Class : this class contains the details of the items in the queue
 class TicketItem {
 public:
-//    int value;
     string personName;
     string reserveCode;
 
@@ -18,10 +14,10 @@ public:
 
     void print() {
         cout << personName << ", " << reserveCode << endl;
-
-//        cout << personName << " " << endl;
-//        cout << reserveCode << " " << endl;
     }
+    // TicketItem class does not dynamically allocate memory using the 'new' operator,
+    // memory will be managed properly using the default destructor
+    ~TicketItem() = default;
 };
 
 // Node Class : Node for the LLStack
@@ -40,6 +36,10 @@ public:
     void print() {
         data->print();
     }
+
+    ~Node() {
+        delete data;
+    }
 };
 
 //LLStack Class : Container for Nodes
@@ -47,7 +47,6 @@ template<typename T>
 class LLStack {
 private:
     Node<T> *top;
-//    Node<T> *tail;
     int stackSize;
     const int SMAXITEMS = 10; //TODO determine if Prof Manju had a number for this in mind
 
@@ -83,16 +82,6 @@ public:
     void printData() {
         top->print();
     }
-
-
-//    void printList() {
-//        Node<T> *temp = top;
-//        while (temp != nullptr) {
-//            temp->print();
-//            temp = temp->nextNode;
-//        }
-////        delete temp;
-//    }
 
     // stack methods
     bool isFull() {
@@ -399,6 +388,7 @@ int main() {
      * f. Display enQStack and deQStack
      * g. Exit
      */
+    // changed from int userNum = 0;
     int userNum = 0;
 //    StackQ<Node<TicketItem>> *stackQueue;
     auto *stackQueue = new StackQ<Node<TicketItem>>();
@@ -412,7 +402,8 @@ int main() {
     cout << "Welcome to the Ticket Queue Program!\n" << endl;
     cout << "Here is a list of the available options that can be performed on the queue:" << endl;
 
-    while (userNum >= 0) {
+    // while (userNum >= 0)
+    while (userNum != -10000) {
         cout << "Enter a number from 1 to 7 and the corresponding operation will be perfomed.\n" << endl;
 
         cout << "1: Add item to the ticket queue." << endl;
@@ -424,6 +415,7 @@ int main() {
         cout << "7: Exit the program." << endl;
 
         cin >> userNum;
+
 
         switch (userNum) {
             case 1:
@@ -471,9 +463,12 @@ int main() {
                 cout << endl;
                 break;
             case 7:
-                cout << "Thanks for using the Ticket Queue Program!  Have a great day!" << endl;
-                userNum = -1;
+                cout << "Thanks for using the Ticket Queue Program!  Have a nice day!" << endl;
+                userNum = -10000;
                 break;
+            default:
+                cout << "Invalid choice.  Please enter a number from 1 to 7" << endl;
+
         }
 
     }
