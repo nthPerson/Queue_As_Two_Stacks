@@ -53,9 +53,6 @@ public:
       */
     ~Node() = default;
 
-//    ~Node() {
-//        delete data;
-//    }
 };
 
 //LLStack Class : Container for Nodes
@@ -76,7 +73,7 @@ public:
 
     // constructor
     LLStack(T *value) {
-        Node<T> *newNode = new Node<T>(value);
+        auto *newNode = new Node<T>(value);
         top = newNode;
         stackSize = 1;
     }
@@ -91,12 +88,10 @@ public:
         }
     }
 
-
     void print() {
         if (this->isEmpty()) {
             cout << "Stack is empty." << endl;
         }
-
         auto *printStack = new LLStack<T>;
         // print stack
         while (!this->isEmpty()) {
@@ -110,7 +105,6 @@ public:
             printStack->pop();
         }
         delete printStack;
-
     }
 
     int getSMAXITEMS() {
@@ -150,9 +144,6 @@ public:
             cout << "Stack is empty, cannot pop from empty stack. (Underflow condition)" << endl;
         }
         else {
-            // removed print statement to avoid over-printing nodes in the print method
-//            cout << "Popped from the stack: ";
-//            top->print();
             deleteFirst();
             --stackSize;
         }
@@ -166,16 +157,6 @@ public:
         return top->data;  // returns pointer to top's data member.  Print member with llStack->peek()->print()
     }
 
-    // get and set
-//    Node<T> *getTop() {
-//        if (top == nullptr) {
-//            cout << "Top: nullptr" << endl;
-//        } else {
-//            cout << "Top: " << top->value << endl;
-//        }
-//        return top;
-//    }
-
     int getStackSize() {
         return stackSize;
     }
@@ -185,7 +166,6 @@ public:
         Node<T> *newNode = new Node<T>(value);
         if (isEmpty()) { // stackSize == 0
             top = newNode;
-//            tail = newNode;
         } else {
             newNode->nextNode = top;
             top = newNode;
@@ -218,7 +198,7 @@ private:
     const int QMAXITEMS = 20;
 
 public:
-    // constructor
+    // constructors
     StackQ() {
         enQStack = new LLStack<T>();
         deQStack = new LLStack<T>();
@@ -242,17 +222,12 @@ public:
     }
 
     bool isFull() {
-        if (enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS)
-            return true; // can simplify method with return enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS;
-        else
-            return false;
+        // enQStack->getStackSize() + deQStack->getStackSize() = queueSize
+        return enQStack->getStackSize() + deQStack->getStackSize() == QMAXITEMS;
     }
 
     bool isEmpty() {
-        if (enQStack->getStackSize() + deQStack->getStackSize() == 0)
-            return true; // can simplify method with return enQStack->getStackSize() + deQStack->getStackSize() == 0;
-        else
-            return false;
+        return enQStack->getStackSize() + deQStack->getStackSize() == 0;
     }
 
     void enqueue(T *item) {
@@ -276,7 +251,7 @@ public:
                     enQStack->pop();
                 }
                 // calculate the number of items that can be moved to deQStack and
-                // only move that many items from tempEnqueueStack to deQStack
+                // only move that many items to deQStack
                 // number of items able to be moved = deQStack->getSMAXITEMS() - tempDQStack->getStackSize()
                 for (int i = 0; i < deQStack->getSMAXITEMS() - tempDQStack->getStackSize(); ++i) {
                     deQStack->push(tempEnqueueStack->peek());
@@ -336,7 +311,6 @@ public:
                 enQStack->pop();
             }
             return deQStack->peek();
-
         } else {
             return deQStack->peek();
         }
@@ -375,7 +349,6 @@ public:
         if (enQStack->isEmpty()) {
             cout << "enQStack is empty." << endl;
         }
-
         auto *printStack = new LLStack<T>;
         // print enQStack while moving to printStack
         while (!enQStack->isEmpty()) {
@@ -395,7 +368,6 @@ public:
         if (deQStack->isEmpty()) {
             cout << "deQStack is empty." << endl;
         }
-
         auto *printStack = new LLStack<T>;
         // print enQStack while moving to printStack
         while (!deQStack->isEmpty()) {
@@ -414,33 +386,17 @@ public:
 };
 
 int main() {
-    /*
-     * main method requirements
-     * create StackQ object
-     * display menu to perform the following options:
-     * a. Add item to the ticket queue
-     * b. Delete from ticket queue
-     * c. Peek from the ticket queue
-     * d. Display the ticket queue
-     * e. Display ticket queue size
-     * f. Display enQStack and deQStack
-     * g. Exit
-     */
-    // changed from int userNum = 0;
+
     int userNum = 0;
-//    StackQ<Node<TicketItem>> *stackQueue;
     auto *stackQueue = new StackQ<Node<TicketItem>>();
-//    auto *queue = new StackQ<TicketItem>();
     string personName;
     string reserveCode;
     TicketItem *ticketItem;
     Node<TicketItem> *newNode;
-//    auto *newQueueItem = new Node<TicketItem>();
 
     cout << "Welcome to the Ticket Queue Program!\n" << endl;
     cout << "Here is a list of the available options that can be performed on the queue:" << endl;
 
-    // while (userNum >= 0)
     while (userNum != -10000) {
         cout << "Enter a number from 1 to 7 and the corresponding operation will be performed.\n" << endl;
 
@@ -508,79 +464,7 @@ int main() {
                 cout << "Invalid choice.  Please enter a number from 1 to 7" << endl;
 
         }
-
     }
-
-
-    // test components
-//    auto *t1 = new TicketItem("Joe", "1");
-//    auto *t2 = new TicketItem("Amy", "2");
-//    auto *t3 = new TicketItem("Dave", "3");
-//    auto *t4 = new TicketItem("Larry", "4");
-//    auto *t5 = new TicketItem("Robert", "5");
-//    auto *node1 = new Node<TicketItem>(t1);
-//    auto *node2 = new Node<TicketItem>(t2);
-//    auto *node3 = new Node<TicketItem>(t3);
-//    auto *node4 = new Node<TicketItem>(t4);
-//    auto *node5 = new Node<TicketItem>(t5);
-//    auto *testStack = new LLStack<Node<TicketItem>>(node1);
-//    auto *testStack = new LLStack<Node<TicketItem>>();
-
-    // StackQ components
-//    auto *testQ = new StackQ<Node<TicketItem>>();
-
-//    testEnqueueUntilFull();
-//    cout << "\nTesting creation of StackQ instance, memory location of StackQ testQ: " << testQ << endl;
-
-    // testing enqueue method
-//    testQ->enqueue(node1);
-//    testQ->enqueue(node2);
-//    testQ->enqueue(node3);
-//    testQ->dequeue();
-//    testQ->enqueue(node4);
-//    testQ->enqueue(node5);
-
-    // testing isFull() method
-//    for (int i = 0; i < 20; ++i) {
-//        testQ->enqueue(node1);
-//    }
-//    testQ->print();
-
-
-//    // testing pop from empty stack
-//    cout << "testing pop from empty stack" << endl;
-//    testStack->pop();
-//
-//    // testing peek from empty stack
-//    cout << "testing peek from empty stack" << endl;
-//    testStack->peek();
-//
-//    // testing push
-//    testStack->push(node1);
-//    testStack->printList();
-//    cout << endl;
-//    testStack->push(node1);
-//    testStack->push(node1);
-//    testStack->printList();
-//    cout << endl;
-//
-//    // testing pop
-//    testStack->pop();
-//    testStack->printList();
-//    cout << endl;
-//
-//    // testing peek
-//    cout << "testing peek" << endl;
-//    testStack->peek()->print();
-//
-//    // testing push onto full stack
-//    cout << "testing push onto full stack" << endl;
-//    for (int i = 0; i < 20; ++i) {
-//        cout << "i = " << i << endl;
-//        testStack->push(node1);
-//    }
-//    testStack->push(node1);
-//    testStack->printList();
 
     return 0;
 }
